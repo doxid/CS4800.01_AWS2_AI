@@ -1,0 +1,10 @@
+// For combining the two data sets
+/*
+   distance = 500;
+   for every row in the wildfire data set
+        check if date = weatherDate AND wildfire County = weatherCounty
+            do the distance formula for every latitude and longitude
+            if newDistance < distance
+                Add that rows precipitation and Temp. Data to the wildfire dataset
+                distance = newDistance
+*/
