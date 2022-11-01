@@ -1,5 +1,6 @@
 // For combining the two data sets
 /*
+while there is data in the Wildfire data set
    distance = 500;
    for every row in the wildfire data set
         check if date = weatherDate AND wildfire County = weatherCounty
