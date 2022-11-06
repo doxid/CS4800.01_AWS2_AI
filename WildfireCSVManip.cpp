@@ -31,37 +31,56 @@ int main()
     stations1[171] = s2;
     stations1[191] = s3;
 
-    /*
-    unordered_map<int, pair<float, float>> stations2;
-    stations2[254] = make_pair(float(37.718167), float(-122.197111));
-    stations2[171] = make_pair(float(37.598758), float(-122.053230));
-    stations2[191] = make_pair(float(37.663969), float(-121.885030));
+    //cout << stations1[254].county << endl;
+    //cout << s1.county << endl;
+    //s1.county = "changed";
+    //cout << stations1[254].county << endl;
+    //cout << s1.county << endl;
 
-    for (auto itr = stations1.begin(); itr != stations1.end(); ++itr) {
-        cout << "Stations: " << itr->first << " County: " << itr->second.county << endl;
-        cout << setprecision(9) << "Latitude: " << itr->second.lat << "\nLongitude: " << itr->second.lng << endl << endl;
-    }*/
+    // Code to get data from the Station Text file and store it in a hash map
+    unordered_map<int, Stn> stations2;
+    fstream stnData("StationLatLong.txt");
+    string stnLine, stnID, stnLat, stnLong, stnCounty;
+    while (getline(stnData, stnLine)) {
+        stringstream stnS(stnLine);
+        getline(stnS, stnID, ',');      // Get the station ID from the text file
+        getline(stnS, stnLat, ',');     // Get the station Latitude from the text file
+        getline(stnS, stnLong, ',');     // Get the station Longitude from the text file
+        getline(stnS, stnCounty, ',');     // Get the station County from the text file
+        struct Stn s; s.lat = stod(stnLat); s.lng = stod(stnLong); s.county = stnCounty;
 
-    fstream fout("modDaily.csv", ios::out);
-    fstream fin("daily.csv");
-
-    string line, word, temp, stationID;
-
-    getline(fin, temp);
-    fout << temp << ",County,Latitude,Longitude\n";
-
-    // cout << setprecision(9) << stations1[191].lat;
-
-    while (getline(fin, line)) {
-
-        stringstream s(line);
-
-        getline(s, stationID, ',');
-
-        fout << setprecision(9) << line << "," << stations1[stoi(stationID)].county
-             << "," << stations1[stoi(stationID)].lat
-             << "," << stations1[stoi(stationID)].lng << "\n";
+        stations2[stoi(stnID)] = s;
     }
+
+    // Code to print all of the station data in the hash map
+    for (auto itr = stations2.begin(); itr != stations2.end(); ++itr) {
+        cout << "Station: " << itr->first << " County: " << itr->second.county << endl;
+        cout << setprecision(9) << "Latitude: " << itr->second.lat << "\nLongitude: " << itr->second.lng << endl << endl;
+    }
+    stnData.close();
+
+    //// Code to add data from a previous file and then county, latitude, and longitude
+    //// to a new csv file
+    //fstream fout("modDaily.csv", ios::out);
+    //fstream fin("daily.csv");
+
+    //string line, word, temp, stationID;
+
+    //getline(fin, temp);
+    //fout << temp << ",County,Latitude,Longitude\n";
+
+    //// cout << setprecision(9) << stations1[191].lat;
+
+    //while (getline(fin, line)) {
+
+    //    stringstream s(line);
+
+    //    getline(s, stationID, ',');
+
+    //    fout << setprecision(9) << line << "," << stations1[stoi(stationID)].county
+    //         << "," << stations1[stoi(stationID)].lat
+    //         << "," << stations1[stoi(stationID)].lng << "\n";
+    //}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
