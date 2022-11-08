@@ -38,7 +38,7 @@ int main()
     }
     fireIn.close();
 
-    fstream weatherIn("test.csv");
+    fstream weatherIn("AllCombinedData.csv");
     fstream weatherOut("filteredWeatherData.csv", ios::out);
     getline(weatherIn, header);
     weatherOut << header << endl;
