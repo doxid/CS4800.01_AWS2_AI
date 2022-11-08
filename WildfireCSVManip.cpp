@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <map>
 #include <unordered_map>
 #include <utility>
 #include <string>
@@ -22,21 +23,57 @@ struct Stn{
 
 int main()
 {
+    // Code to filter out all the dates that we don't need from the weather station data
+    fstream fireIn("WildfireAndWeatherData.csv");
+    string header, date, fireLine;
+    map<string, int> dates;
+    getline(fireIn, header);
+
+    while (getline(fireIn, fireLine)) {
+        stringstream fireS(fireLine);
+
+        getline(fireS, date, ',');
+
+        dates[date] = 1;
+    }
+    fireIn.close();
+
+    fstream weatherIn("test.csv");
+    fstream weatherOut("filteredWeatherData.csv", ios::out);
+    getline(weatherIn, header);
+    weatherOut << header << endl;
+    string weatherLine;
+    while (getline(weatherIn, weatherLine)) {
+        stringstream weatherS(weatherLine);
+
+        getline(weatherS, date, ',');
+        
+        auto it = dates.find(date);
+        if (it != dates.end())
+            weatherOut << weatherLine << endl;
+    }
+    weatherIn.close();
+    weatherOut.close();
+
+    /*
+    // Code to print out the data from the dates map
+    for (auto itr = dates.begin(); itr != dates.end(); ++itr) {
+        cout << "Date: " << itr->first << " Value: " << itr->second << endl;
+    }
+    */
+
+    /*
+    // Code to test things.
     struct Stn s1; s1.lat = 37.718167; s1.lng = -122.197111; s1.county = "Alameda";
     struct Stn s2; s2.lat = 37.598758; s2.lng = -122.053230; s2.county = "Alameda";
     struct Stn s3; s3.lat = 37.663969; s3.lng = -121.885030; s3.county = "Alameda";
-
     unordered_map<int, Stn> stations1;
     stations1[254] = s1;
     stations1[171] = s2;
     stations1[191] = s3;
+    */
 
-    //cout << stations1[254].county << endl;
-    //cout << s1.county << endl;
-    //s1.county = "changed";
-    //cout << stations1[254].county << endl;
-    //cout << s1.county << endl;
-
+    /*
     // Code to get data from the Station Text file and store it in a hash map
     unordered_map<int, Stn> stations2;
     fstream stnData("StationLatLong.txt");
@@ -58,6 +95,7 @@ int main()
         cout << setprecision(9) << "Latitude: " << itr->second.lat << "\nLongitude: " << itr->second.lng << endl << endl;
     }
     stnData.close();
+    */
 
     //// Code to add data from a previous file and then county, latitude, and longitude
     //// to a new csv file
