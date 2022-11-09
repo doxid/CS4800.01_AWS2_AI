@@ -23,6 +23,7 @@ struct Stn{
 
 int main()
 {
+    /*
     // Code to filter out all the dates that we don't need from the weather station data
     fstream fireIn("WildfireAndWeatherData.csv");
     string header, date, fireLine;
@@ -88,7 +89,9 @@ int main()
 
         stations2[stoi(stnID)] = s;
     }
+    */
 
+    /*
     // Code to print all of the station data in the hash map
     for (auto itr = stations2.begin(); itr != stations2.end(); ++itr) {
         cout << "Station: " << itr->first << " County: " << itr->second.county << endl;
@@ -97,28 +100,31 @@ int main()
     stnData.close();
     */
 
-    //// Code to add data from a previous file and then county, latitude, and longitude
-    //// to a new csv file
-    //fstream fout("modDaily.csv", ios::out);
-    //fstream fin("daily.csv");
+    /*
+    // Code to add data from a previous file and then county, latitude, and longitude
+    // to a new csv file
+    fstream fout("filteredWeatherDataLatLong.csv", ios::out);
+    fstream fin("filteredWeatherData.csv");
 
-    //string line, word, temp, stationID;
+    string line, word, temp, stationID;
 
-    //getline(fin, temp);
-    //fout << temp << ",County,Latitude,Longitude\n";
+    getline(fin, temp);
+    fout << temp << ",County,Latitude,Longitude\n";
 
-    //// cout << setprecision(9) << stations1[191].lat;
+    // cout << setprecision(9) << stations1[191].lat;
 
-    //while (getline(fin, line)) {
+    while (getline(fin, line)) {
 
-    //    stringstream s(line);
+        stringstream s(line);
 
-    //    getline(s, stationID, ',');
+        getline(s, temp, ',');
+        getline(s, stationID, ',');
 
-    //    fout << setprecision(9) << line << "," << stations1[stoi(stationID)].county
-    //         << "," << stations1[stoi(stationID)].lat
-    //         << "," << stations1[stoi(stationID)].lng << "\n";
-    //}
+        fout << setprecision(9) << line << "," << stations2[stoi(stationID)].county
+             << "," << stations2[stoi(stationID)].lat
+             << "," << stations2[stoi(stationID)].lng << "\n";
+    }
+    */
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
