@@ -1,5 +1,6 @@
 // WildfireCSVManip.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+#define _USE_MATH_DEFINES
 
 #include <iostream>
 #include <fstream>
@@ -10,8 +11,14 @@
 #include <string>
 #include <iomanip>
 #include <vector>
+#include <cmath>
+#include <numbers>
 
 using namespace std;
+
+// Prototypes
+double degToRad(double deg);
+double calcDistanceLatLong(double lat1, double long1, double lat2, double long2);
  
 // Maybe need to use a structure or a class instead of pairs for the map?
 struct Stn{
@@ -125,6 +132,78 @@ int main()
              << "," << stations2[stoi(stationID)].lng << "\n";
     }
     */
+    
+    // Code to combine the data based on the shortest distance to the wildfire
+    fstream fireIn("Wildfire.csv");
+    // fstream fireIn("test.csv");
+    fstream weatherIn("filteredWeatherDataLatLong.csv");
+    // fstream weatherIn("test2.csv");
+    fstream combineOut("FireAndWeatherData.csv", ios::out);
+    string lat1, long1, lat2, long2, fireHeader, fireLine, weatherHeader, weatherLine;
+    string fireCounty, fireDate, weatherCounty, weatherDate;
+
+    getline(fireIn, fireHeader);
+    getline(weatherIn, weatherHeader);
+    combineOut << fireHeader << "," << weatherHeader << endl;
+    weatherIn.close();
+
+    while (getline(fireIn, fireLine)) {
+        stringstream fireS(fireLine);
+
+        getline(fireS, fireCounty, ',');
+        getline(fireS, fireDate, ',');
+        getline(fireS, lat1, ',');
+        getline(fireS, long1, ',');
+        double distance = 1000000;
+
+        weatherIn.open("filteredWeatherDataLatLong.csv");
+        // weatherIn.open("test2.csv");
+        string tempHeader;
+        string weatherData = ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";
+        getline(weatherIn, tempHeader);
+
+        while (getline(weatherIn, weatherLine)) {
+            stringstream weatherS(weatherLine);
+
+            getline(weatherS, weatherCounty, ',');
+            getline(weatherS, weatherDate, ',');
+            getline(weatherS, lat2, ',');
+            getline(weatherS, long2, ',');
+
+            if (fireDate == weatherDate && fireCounty == weatherCounty) {
+                cout << "FireCounty: " << fireCounty << " Weathercounty: " << weatherCounty << endl;
+                cout << "Lat1: " << lat1 << " Long: " << long1 << " Lat2: " << lat2 << "Long2: " << long2 << endl;
+                
+                double newDistance = calcDistanceLatLong(stod(lat1), stod(long1), stod(lat2), stod(long2));
+                cout << "NewDistance: " << newDistance << endl;
+                if (newDistance < distance) {
+                    weatherData = weatherLine;
+                    distance = newDistance;
+                    cout << "distance: " << distance << " newDistance: " << newDistance << endl;
+                }
+            }
+        }
+
+        cout << endl;
+        combineOut << fireLine << "," << weatherData << endl;
+        weatherIn.close();
+    }
+    
+    return 0;
+}
+
+double degToRad(double deg) {
+    return deg * (M_PI / 180);
+}
+
+double calcDistanceLatLong(double lat1, double long1, double lat2, double long2) {
+    double R = 6378.1; // Earth's radius in km
+    double dLat = degToRad(lat2 - lat1);
+    double dLong = degToRad(long2 - long1);
+
+    double a = pow(sin(dLat / 2), 2) + cos(degToRad(lat1)) * cos(degToRad(lat2)) * pow(sin(dLong / 2), 2);
+
+    return 2 * R * asin(sqrt(a));
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
